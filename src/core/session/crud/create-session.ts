@@ -3,7 +3,7 @@ import { Static } from "@sinclair/typebox";
 import { t } from "elysia";
 import { sessionSchema, sessionTableName } from "./session.model";
 
-const createSessionParams = t.Pick(sessionSchema, ["id", "userID", "role"]);
+const createSessionParams = t.Pick(sessionSchema, ["id", "userId", "role"]);
 
 export type CreateSessionParams = Static<typeof createSessionParams>;
 

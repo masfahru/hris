@@ -20,7 +20,7 @@ describe("bearerPlugin", () => {
 		const result = await server.handle(
 			new Request("http://localhost/", {
 				headers: {
-					Authorization: "Bearer valid_token",
+					authorization: "Bearer valid_token",
 				},
 			}),
 		);

@@ -1,5 +1,6 @@
 import { sql } from "@databases/postgres/sql";
 import { Static } from "@sinclair/typebox";
+import Bun from "bun";
 import { NotFoundError, t } from "elysia";
 import { superAdminSchema, superAdminTableName } from "../super-admin.model";
 

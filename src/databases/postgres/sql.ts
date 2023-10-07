@@ -22,7 +22,11 @@ interface SqlObject {
 
 const toSql = (obj: SqlObject) => {
 	// delete undefined values
-	Object.keys(obj).forEach((key) => obj[key] === undefined && delete obj[key]);
+	for (const key of Object.keys(obj)) {
+		if (obj[key] === undefined) {
+			delete obj[key];
+		}
+	}
 	return Object.keys(obj).map(
 		(x) => sql`${sql(x)} = ${obj[x] as unknown as ParameterOrFragment<never>}`,
 	);

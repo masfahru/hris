@@ -1,10 +1,10 @@
-import validateJWTConfig, { JWTConfig } from "./config.validator";
+import validateJwtConfig, { JwtConfig } from "./config.validator";
 
-const jwtConfig: JWTConfig = {
+const jwtConfig: JwtConfig = {
 	secret: process.env.JWT_SECRET ?? "",
 };
 
-if (!validateJWTConfig(jwtConfig)) {
+if (!validateJwtConfig(jwtConfig)) {
 	throw new Error("Invalid JWT configuration");
 }
 

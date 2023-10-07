@@ -1,21 +1,20 @@
-import { generateUID } from "@common/uid/uid";
-import { bearerPlugin } from "@core/bearer/bearer";
+import { generateUid } from "@common/uid/uid";
 import { UserRole } from "@core/enums/user-roles";
 import * as jwt from "@core/jwt/jwt";
-import * as createSession from "@core/session/crud/create-session";
-import * as deleteSession from "@core/session/crud/delete-session";
+import * as sessionCrud from "@core/session/crud";
+import Bun from "bun";
 import Elysia from "elysia";
 import { httpErrorDecorator } from "elysia-http-error";
-import { getSuperAdminPassword } from "../db/read/get-password";
-import { superAdminProfilePlugin } from "../plugins/super-admin-profile";
-import { SignDTO } from "./schemas";
+import { getSuperAdminPassword } from "../db";
+import { superAdminProfilePlugin } from "../plugins";
+import { SignDto } from "./schemas";
 
 const loginDeps = new Elysia({
 	name: "login-deps",
 })
 	.decorate("getPassword", getSuperAdminPassword)
 	.decorate("signSync", jwt.signSync)
-	.decorate("createSession", createSession.createSession);
+	.decorate("createSession", sessionCrud.createSession);
 
 export type LoginDeps = typeof loginDeps;
 
@@ -27,11 +26,17 @@ export const loginPlugin = (deps: LoginDeps = loginDeps) =>
 		.use(deps)
 		.post(
 			"/login",
-			async ({ body, HttpError, getPassword, signSync, createSession }) => {
+			async ({
+				body,
+				HttpError: httpError,
+				getPassword,
+				signSync,
+				createSession,
+			}) => {
 				const user = await getPassword(body.username);
 
 				if (!user) {
-					throw HttpError.Unauthorized("Invalid username or password");
+					throw httpError.Unauthorized("Invalid username or password");
 				}
 
 				const isPasswordValid = await Bun.password.verify(
@@ -40,26 +45,26 @@ export const loginPlugin = (deps: LoginDeps = loginDeps) =>
 				);
 
 				if (!isPasswordValid) {
-					throw HttpError.Unauthorized("Invalid username or password");
+					throw httpError.Unauthorized("Invalid username or password");
 				}
 
 				const payload = {
-					id: generateUID(),
-					userID: user.id,
-					role: UserRole.SUPERADMIN,
+					id: generateUid(),
+					userId: user.id,
+					role: UserRole.SuperAdmin,
 				};
 
 				const jwt = signSync(payload);
 				const session = await createSession(payload);
 				if (!session) {
-					throw HttpError.Internal("Unable to complete the request");
+					throw httpError.Internal("Unable to complete the request");
 				}
 				return {
 					token: jwt,
 				};
 			},
 			{
-				body: SignDTO,
+				body: SignDto,
 			},
 		);
 
@@ -67,7 +72,7 @@ const logoutDeps = new Elysia({
 	name: "logout-deps",
 })
 	.use(superAdminProfilePlugin())
-	.decorate("deleteSession", deleteSession.deleteSession);
+	.decorate("deleteSession", sessionCrud.deleteSession);
 
 export type LogoutDeps = typeof logoutDeps;
 
@@ -77,15 +82,18 @@ export const logoutPlugin = (deps: LogoutDeps = logoutDeps) =>
 	})
 		.use(httpErrorDecorator)
 		.use(deps)
-		.post("/logout", async ({ session, HttpError, deleteSession }) => {
-			const sessionId = await deleteSession(session);
-			if (!sessionId) {
-				throw HttpError.Unauthorized();
-			}
-			return {
-				message: "Logged out successfully",
-			};
-		});
+		.post(
+			"/logout",
+			async ({ session, HttpError: httpError, deleteSession }) => {
+				const sessionId = await deleteSession(session);
+				if (!sessionId) {
+					throw httpError.Unauthorized();
+				}
+				return {
+					message: "Logged out successfully",
+				};
+			},
+		);
 
 export const superAdminAuth = new Elysia().group("/auth", (app) =>
 	app.use(loginPlugin()).use(logoutPlugin()),

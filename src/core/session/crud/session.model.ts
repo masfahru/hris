@@ -6,7 +6,7 @@ export const sessionSchema = t.Object({
 	id: t.String({
 		minLength: 1,
 	}),
-	userID: t.Number({
+	userId: t.Number({
 		minimum: 1,
 	}),
 	role: t.String({

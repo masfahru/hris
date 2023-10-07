@@ -1,7 +1,7 @@
 import getOrCreatePlugin from "@common/get-or-create-plugin";
 import { bearerPlugin } from "@core/bearer/bearer";
 import * as jwt from "@core/jwt/jwt";
-import * as getSession from "@core/session/crud/get-session";
+import * as crud from "@core/session/crud";
 import Elysia from "elysia";
 import { httpErrorDecorator } from "elysia-http-error";
 
@@ -10,7 +10,7 @@ const sessionDeps = new Elysia({
 })
 	.use(bearerPlugin)
 	.decorate("verifyAsync", jwt.verifyAsync)
-	.decorate("getSession", getSession.getSession);
+	.decorate("getSession", crud.getSession);
 
 export type SessionDeps = typeof sessionDeps;
 
@@ -20,29 +20,31 @@ const generatePlugin = (deps: SessionDeps) =>
 	})
 		.use(httpErrorDecorator)
 		.use(deps)
-		.derive(async ({ bearer, HttpError, verifyAsync, getSession }) => {
-			if (!bearer) {
-				throw HttpError.Unauthorized();
-			}
-			const verifiedBearer = await verifyAsync(bearer);
+		.derive(
+			async ({ bearer, HttpError: httpError, verifyAsync, getSession }) => {
+				if (!bearer) {
+					throw httpError.Unauthorized();
+				}
+				const verifiedBearer = await verifyAsync(bearer);
 
-			if (!verifiedBearer) {
-				throw HttpError.Unauthorized();
-			}
-			const session = {
-				id: verifiedBearer.id,
-				userID: verifiedBearer.userId,
-				role: verifiedBearer.role,
-			};
-			const sessionId = await getSession(session);
-			if (!sessionId) {
-				throw HttpError.Unauthorized();
-			}
-			Object.freeze(session);
-			return {
-				session,
-			};
-		});
+				if (!verifiedBearer) {
+					throw httpError.Unauthorized();
+				}
+				const session = {
+					id: verifiedBearer.id,
+					userId: verifiedBearer.userId,
+					role: verifiedBearer.role,
+				};
+				const sessionId = await getSession(session);
+				if (!sessionId) {
+					throw httpError.Unauthorized();
+				}
+				Object.freeze(session);
+				return {
+					session,
+				};
+			},
+		);
 
 type SessionPlugin = ReturnType<typeof generatePlugin>;
 

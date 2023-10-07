@@ -1,17 +1,17 @@
 import { errorHandlerPlugin } from "@common/error-handler";
-import { generateUID } from "@common/uid/uid";
+import { generateUid } from "@common/uid/uid";
 import * as jwt from "@core/jwt/jwt";
 import Elysia from "elysia";
-import * as getSession from "../crud/get-session";
+import { getSession } from "../crud";
 import { SessionDeps, sessionPlugin } from "./session";
 import { describe, expect, it, mock } from "bun:test";
 
 describe("sessionPlugin", () => {
-	const sessionId = generateUID();
+	const sessionId = generateUid();
 
 	const verifiedBearer = {
 		id: sessionId,
-		userID: 1,
+		userId: 1,
 		role: "ADMIN",
 	};
 
@@ -36,13 +36,12 @@ describe("sessionPlugin", () => {
 		})
 			.decorate("bearer", "bearer")
 			.decorate("verifyAsync", mockVerifyAsync)
-			.decorate("getSession", getSession.getSession) as unknown as SessionDeps;
+			.decorate("getSession", getSession) as unknown as SessionDeps;
 
 		const server = new Elysia()
 			.use(errorHandlerPlugin)
 			.use(sessionPlugin(mockDeps))
-			.get("/", ({ bearer }) => {
-				console.log(bearer);
+			.get("/", () => {
 				return "OK";
 			});
 
@@ -56,7 +55,7 @@ describe("sessionPlugin", () => {
 			async () => verifiedBearer,
 		);
 
-		const mockGetSession = mock(getSession.getSession).mockImplementation(
+		const mockGetSession = mock(getSession).mockImplementation(
 			async () => null,
 		);
 
@@ -85,7 +84,7 @@ describe("sessionPlugin", () => {
 			},
 		);
 
-		const mockGetSession = mock(getSession.getSession).mockImplementation(
+		const mockGetSession = mock(getSession).mockImplementation(
 			async () => sessionId,
 		);
 
@@ -120,7 +119,7 @@ describe("sessionPlugin", () => {
 			async () => verifiedBearer,
 		);
 
-		const mockGetSession = mock(getSession.getSession).mockImplementation(
+		const mockGetSession = mock(getSession).mockImplementation(
 			async () => null,
 		);
 

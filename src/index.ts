@@ -1,7 +1,7 @@
 import { errorHandlerPlugin } from "@common/error-handler";
 import { initFormatRegistry } from "@common/typebox/format-registry";
 import { Elysia, InternalServerError } from "elysia";
-import { routers } from "./app/router";
+import { router } from "./app";
 
 initFormatRegistry();
 
@@ -15,9 +15,9 @@ const app = new Elysia({
 	.get("/", () => {
 		throw new InternalServerError("Failed to create super admin");
 	})
-	.use(routers)
+	.use(router)
 	.listen(8080);
 
-console.log(
+console.info(
 	`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );

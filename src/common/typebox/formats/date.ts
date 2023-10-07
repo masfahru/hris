@@ -36,7 +36,9 @@ function IsLeapYear(year: number): boolean {
  */
 export function IsDate(value: string): boolean {
 	const matches: string[] | null = DATE.exec(value);
-	if (!matches) return false;
+	if (!matches) {
+		return false;
+	}
 	const year: number = +matches[1];
 	const month: number = +matches[2];
 	const day: number = +matches[3];

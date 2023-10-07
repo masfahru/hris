@@ -1,4 +1,4 @@
 import Elysia from "elysia";
-import { superAdminRoutes } from "./super-admin/routes";
+import { superAdminRoutes } from "./super-admin";
 
-export const routers = new Elysia().use(superAdminRoutes);
+export const router = new Elysia().use(superAdminRoutes);

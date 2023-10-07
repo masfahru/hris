@@ -1,6 +1,6 @@
 import { errorHandlerPlugin } from "@common/error-handler";
 import Elysia from "elysia";
-import { SuperAdminProfile, getSuperAdmin } from "../db/read/get-superadmin";
+import { SuperAdminProfile, getSuperAdmin } from "../db";
 import {
 	SuperAdminProfileDeps,
 	superAdminProfilePlugin,
@@ -8,7 +8,7 @@ import {
 import { describe, expect, it, mock } from "bun:test";
 
 describe("superAdminProfilePlugin", () => {
-	it("should not throw error when session.userID is valid", async () => {
+	it("should not throw error when session.userId is valid", async () => {
 		const superAdminProfile: SuperAdminProfile = {
 			id: 1,
 			name: "John Doe",
@@ -27,7 +27,7 @@ describe("superAdminProfilePlugin", () => {
 		})
 			.decorate("session", {
 				id: 1,
-				userID: "validUserId",
+				userId: "validUserId",
 				role: "ADMIN",
 			})
 			.decorate(
@@ -50,7 +50,7 @@ describe("superAdminProfilePlugin", () => {
 		expect(mockGetSuperAdmin).toHaveBeenCalledTimes(1);
 	});
 
-	it("should throw HttpError when session.userID is invalid", async () => {
+	it("should throw HttpError when session.userId is invalid", async () => {
 		const mockGetSuperAdmin = mock(getSuperAdmin).mockResolvedValue(null);
 
 		const deps: SuperAdminProfileDeps = new Elysia({
@@ -58,7 +58,7 @@ describe("superAdminProfilePlugin", () => {
 		})
 			.decorate("session", {
 				id: 1,
-				userID: "validUserId",
+				userId: "validUserId",
 				role: "ADMIN",
 			})
 			.decorate(

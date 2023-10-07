@@ -7,12 +7,12 @@ const jwtConfig = Type.Object({
 	}),
 });
 
-export type JWTConfig = Static<typeof jwtConfig>;
+export type JwtConfig = Static<typeof jwtConfig>;
 
 const compiledSchema = TypeCompiler.Compile(jwtConfig);
 
-const validateJWTConfig = (config: JWTConfig): boolean => {
+const validateJwtConfig = (config: JwtConfig): boolean => {
 	return compiledSchema.Check(config);
 };
 
-export default validateJWTConfig;
+export default validateJwtConfig;

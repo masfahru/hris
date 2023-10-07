@@ -8,7 +8,7 @@ import {
 	IsTime,
 	IsUrl,
 	IsUuid,
-} from "./formats/index";
+} from "./formats";
 
 export const initFormatRegistry = () => {
 	// Email

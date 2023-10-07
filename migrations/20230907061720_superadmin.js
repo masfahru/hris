@@ -4,7 +4,7 @@ const tableName = getTableName('super_admins')
 
 export async function up(knex) {
   const exists = await knex.schema.hasTable(tableName)
-  if (exists) return null
+  if (exists) { return null }
   return knex.schema.createTable(tableName, (table) => {
     table.increments('id').primary()
     table.string('username').notNullable().index()

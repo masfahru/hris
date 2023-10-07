@@ -2,9 +2,9 @@ import { and, sql, toSql } from "@databases/postgres/sql";
 import { Static } from "@sinclair/typebox";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { t } from "elysia";
-import { SessionModel, sessionSchema, sessionTableName } from "./session.model";
+import { sessionSchema, sessionTableName } from "./session.model";
 
-const getSessionParams = t.Pick(sessionSchema, ["id", "userID", "role"]);
+const getSessionParams = t.Pick(sessionSchema, ["id", "userId", "role"]);
 
 export type GetSessionParams = Static<typeof getSessionParams>;
 

@@ -1,3 +1,3 @@
 import { ObjectId } from "bson";
 
-export const generateUID = () => new ObjectId().toHexString();
+export const generateUid = () => new ObjectId().toHexString();

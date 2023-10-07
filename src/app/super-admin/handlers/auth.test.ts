@@ -1,20 +1,13 @@
 import { errorHandlerPlugin } from "@common/error-handler";
-import { generateUID } from "@common/uid/uid";
-import { UserRole } from "@core/enums/user-roles";
+import { generateUid } from "@common/uid/uid";
 import { signSync } from "@core/jwt/jwt";
 import { createSession } from "@core/session/crud/create-session";
 import { deleteSession } from "@core/session/crud/delete-session";
+import Bun from "bun";
 import Elysia from "elysia";
-import * as getPassword from "../db/read/get-password";
-import { superAdminProfilePlugin } from "../plugins/super-admin-profile";
-import {
-	LoginDeps,
-	LogoutDeps,
-	loginPlugin,
-	logoutPlugin,
-	superAdminAuth,
-} from "./auth";
-import { describe, expect, it, mock, spyOn } from "bun:test";
+import * as db from "../db";
+import { LoginDeps, LogoutDeps, loginPlugin, logoutPlugin } from "./auth";
+import { describe, expect, it, mock } from "bun:test";
 
 describe("Super Admin Auth Handlers", () => {
 	describe("POST /login", () => {
@@ -27,7 +20,7 @@ describe("Super Admin Auth Handlers", () => {
 			};
 
 			const mockGetSuperAdminPassword = mock(
-				getPassword.getSuperAdminPassword,
+				db.getSuperAdminPassword,
 			).mockResolvedValue(null);
 
 			const mockLoginDeps = new Elysia({
@@ -69,7 +62,7 @@ describe("Super Admin Auth Handlers", () => {
 			};
 
 			const mockGetSuperAdminPassword = mock(
-				getPassword.getSuperAdminPassword,
+				db.getSuperAdminPassword,
 			).mockResolvedValue(userPassword);
 
 			const mockLoginDeps = new Elysia({
@@ -111,7 +104,7 @@ describe("Super Admin Auth Handlers", () => {
 			};
 
 			const mockGetSuperAdminPassword = mock(
-				getPassword.getSuperAdminPassword,
+				db.getSuperAdminPassword,
 			).mockResolvedValue(userPassword);
 
 			const mockCreateSession = mock(createSession).mockResolvedValue(null);
@@ -156,13 +149,13 @@ describe("Super Admin Auth Handlers", () => {
 			};
 
 			const mockGetSuperAdminPassword = mock(
-				getPassword.getSuperAdminPassword,
+				db.getSuperAdminPassword,
 			).mockResolvedValue(userPassword);
 
-			const sessionID = generateUID();
+			const sessionId = generateUid();
 
 			const mockCreateSession =
-				mock(createSession).mockResolvedValue(sessionID);
+				mock(createSession).mockResolvedValue(sessionId);
 
 			const mockLoginDeps = new Elysia({
 				name: "login-deps",
@@ -193,15 +186,15 @@ describe("Super Admin Auth Handlers", () => {
 
 	describe("POST /logout", () => {
 		it("should return a success message when a valid token is provided", async () => {
-			const sessionID = generateUID();
+			const sessionId = generateUid();
 
 			const mockDeleteSession =
-				mock(deleteSession).mockResolvedValue(sessionID);
+				mock(deleteSession).mockResolvedValue(sessionId);
 
 			const mockLogoutDeps = new Elysia({
 				name: "logout-deps",
 			})
-				.decorate("session", sessionID)
+				.decorate("session", sessionId)
 				.decorate("deleteSession", mockDeleteSession) as unknown as LogoutDeps;
 
 			const server = new Elysia()
@@ -219,14 +212,14 @@ describe("Super Admin Auth Handlers", () => {
 		});
 
 		it("should return an error when an invalid token is provided", async () => {
-			const sessionID = generateUID();
+			const sessionId = generateUid();
 
 			const mockDeleteSession = mock(deleteSession).mockResolvedValue(null);
 
 			const mockLogoutDeps = new Elysia({
 				name: "logout-deps",
 			})
-				.decorate("session", sessionID)
+				.decorate("session", sessionId)
 				.decorate("deleteSession", mockDeleteSession) as unknown as LogoutDeps;
 
 			const server = new Elysia()
