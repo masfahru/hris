@@ -1,28 +1,29 @@
 {
-  "name": "elysia-js-hris",
-  "version": "0.0.1",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun --bun --watch src/index.ts",
-    "lint": "bunx --bun biome format ./src --write && bunx --bun biome check ./src",
-    "start:prod": "bun spawn.ts"
-  },
-  "dependencies": {
-    "@elysiajs/bearer": "^0.7.0",
-    "@sinclair/typebox": "^0.31.17",
-    "bson": "^6.1.0",
-    "elysia": "latest",
-    "elysia-http-error": "^1.1.2",
-    "fast-jwt": "^3.3.0",
-    "postgres": "^3.3.5"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.2.2",
-    "bun-types": "latest",
-    "knex": "^2.5.1",
-    "pg": "^8.11.3",
-    "pg-hstore": "^2.3.4",
-    "prettier": "^3.0.3"
-  },
-  "module": "src/index.js"
+	"name": "elysia-js-hris",
+	"version": "0.0.1",
+	"scripts": {
+		"test": "bun --bun test",
+		"dev": "bun --bun --watch src/index.ts",
+		"lint": "bunx --bun biome format ./src --write && bunx --bun biome check ./src",
+		"tsc": "rm -rf build && bunx --bun tsc --project tsconfig.build.json",
+		"build": "rm -rf build && bun --bun build --target=bun --minify --splitting --outdir=build ./src"
+	},
+	"dependencies": {
+		"@elysiajs/bearer": "^0.7.0",
+		"@sinclair/typebox": "^0.31.17",
+		"bson": "^6.1.0",
+		"elysia": "latest",
+		"elysia-http-error": "^1.1.2",
+		"fast-jwt": "^3.3.0",
+		"postgres": "^3.3.5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.2.2",
+		"bun-types": "latest",
+		"knex": "^2.5.1",
+		"pg": "^8.11.3",
+		"pg-hstore": "^2.3.4",
+		"typescript": "^5.2.2"
+	},
+	"module": "src/index.js"
 }
