@@ -7,7 +7,7 @@ import Elysia from "elysia";
 import { httpErrorDecorator } from "elysia-http-error";
 import { getSuperAdminPassword } from "../db";
 import { superAdminProfilePlugin } from "../plugins";
-import { SignDto } from "./schemas";
+import { signDto } from "./schemas";
 
 const loginDeps = new Elysia({
 	name: "login-deps",
@@ -64,7 +64,7 @@ export const loginPlugin = (deps: LoginDeps = loginDeps) =>
 				};
 			},
 			{
-				body: SignDto,
+				body: signDto,
 			},
 		);
 
@@ -80,7 +80,6 @@ export const logoutPlugin = (deps: LogoutDeps = logoutDeps) =>
 	new Elysia({
 		name: "super-admin-auth-logout-plugin",
 	})
-		.use(httpErrorDecorator)
 		.use(deps)
 		.post(
 			"/logout",

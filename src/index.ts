@@ -1,9 +1,6 @@
 import { errorHandlerPlugin } from "@common/error-handler";
-import { initFormatRegistry } from "@common/typebox/format-registry";
 import { Elysia, InternalServerError } from "elysia";
 import { router } from "./app";
-
-initFormatRegistry();
 
 const app = new Elysia({
 	serve: {
