@@ -7,133 +7,133 @@ import { SessionDeps, sessionPlugin } from "./session";
 import { describe, expect, it, mock } from "bun:test";
 
 describe("sessionPlugin", () => {
-	const sessionId = generateUid();
+  const sessionId = generateUid();
 
-	const verifiedBearer = {
-		id: sessionId,
-		userId: 1,
-		role: "ADMIN",
-	};
+  const verifiedBearer = {
+    id: sessionId,
+    userId: 1,
+    role: "ADMIN",
+  };
 
-	it("should throw an error if no bearer token is provided", async () => {
-		const session = sessionPlugin();
-		const server = new Elysia()
-			.use(errorHandlerPlugin)
-			.use(session)
-			.get("/", () => "OK");
+  it("should throw an error if no bearer token is provided", async () => {
+    const session = sessionPlugin();
+    const server = new Elysia()
+      .use(errorHandlerPlugin)
+      .use(session)
+      .get("/", () => "OK");
 
-		const result = await server.handle(new Request("http://localhost/"));
-		expect(result.status).toBe(401);
-	});
+    const result = await server.handle(new Request("http://localhost/"));
+    expect(result.status).toBe(401);
+  });
 
-	it("should throw an error if the bearer token is invalid", async () => {
-		const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
-			async () => {},
-		);
+  it("should throw an error if the bearer token is invalid", async () => {
+    const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
+      async () => {},
+    );
 
-		const mockDeps = new Elysia({
-			name: "session-deps",
-		})
-			.decorate("bearer", "bearer")
-			.decorate("verifyAsync", mockVerifyAsync)
-			.decorate("getSession", getSession) as unknown as SessionDeps;
+    const mockDeps = new Elysia({
+      name: "session-deps",
+    })
+      .decorate("bearer", "bearer")
+      .decorate("verifyAsync", mockVerifyAsync)
+      .decorate("getSession", getSession) as unknown as SessionDeps;
 
-		const server = new Elysia()
-			.use(errorHandlerPlugin)
-			.use(sessionPlugin(mockDeps))
-			.get("/", () => {
-				return "OK";
-			});
+    const server = new Elysia()
+      .use(errorHandlerPlugin)
+      .use(sessionPlugin(mockDeps))
+      .get("/", () => {
+        return "OK";
+      });
 
-		const result = await server.handle(new Request("http://localhost/"));
-		expect(result.status).toBe(401);
-		expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
-	});
+    const result = await server.handle(new Request("http://localhost/"));
+    expect(result.status).toBe(401);
+    expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
+  });
 
-	it("should throw an error if session is not found", async () => {
-		const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
-			async () => verifiedBearer,
-		);
+  it("should throw an error if session is not found", async () => {
+    const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
+      async () => verifiedBearer,
+    );
 
-		const mockGetSession = mock(getSession).mockImplementation(
-			async () => null,
-		);
+    const mockGetSession = mock(getSession).mockImplementation(
+      async () => null,
+    );
 
-		const mockDeps = new Elysia({
-			name: "session-deps",
-		})
-			.decorate("bearer", "bearer")
-			.decorate("verifyAsync", mockVerifyAsync)
-			.decorate("getSession", mockGetSession) as unknown as SessionDeps;
+    const mockDeps = new Elysia({
+      name: "session-deps",
+    })
+      .decorate("bearer", "bearer")
+      .decorate("verifyAsync", mockVerifyAsync)
+      .decorate("getSession", mockGetSession) as unknown as SessionDeps;
 
-		const server = new Elysia()
-			.use(errorHandlerPlugin)
-			.use(sessionPlugin(mockDeps))
-			.get("/", () => "OK");
+    const server = new Elysia()
+      .use(errorHandlerPlugin)
+      .use(sessionPlugin(mockDeps))
+      .get("/", () => "OK");
 
-		const result = await server.handle(new Request("http://localhost/"));
-		expect(result.status).toBe(401);
-		expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
-		expect(mockGetSession).toHaveBeenCalledTimes(1);
-	});
+    const result = await server.handle(new Request("http://localhost/"));
+    expect(result.status).toBe(401);
+    expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
+    expect(mockGetSession).toHaveBeenCalledTimes(1);
+  });
 
-	it("should success when session is valid", async () => {
-		const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
-			async () => {
-				return verifiedBearer;
-			},
-		);
+  it("should success when session is valid", async () => {
+    const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
+      async () => {
+        return verifiedBearer;
+      },
+    );
 
-		const mockGetSession = mock(getSession).mockImplementation(
-			async () => sessionId,
-		);
+    const mockGetSession = mock(getSession).mockImplementation(
+      async () => sessionId,
+    );
 
-		const mockDeps = new Elysia({
-			name: "session-deps",
-		})
-			.decorate("bearer", "bearer")
-			.decorate("verifyAsync", mockVerifyAsync)
-			.decorate("getSession", mockGetSession) as unknown as SessionDeps;
+    const mockDeps = new Elysia({
+      name: "session-deps",
+    })
+      .decorate("bearer", "bearer")
+      .decorate("verifyAsync", mockVerifyAsync)
+      .decorate("getSession", mockGetSession) as unknown as SessionDeps;
 
-		const server = new Elysia()
-			.use(errorHandlerPlugin)
-			.use(sessionPlugin(mockDeps))
-			.get("/", () => "OK");
+    const server = new Elysia()
+      .use(errorHandlerPlugin)
+      .use(sessionPlugin(mockDeps))
+      .get("/", () => "OK");
 
-		const result = await server.handle(new Request("http://localhost/"));
-		const resultBody = await result.text();
+    const result = await server.handle(new Request("http://localhost/"));
+    const resultBody = await result.text();
 
-		expect(result.status).toBe(200);
-		expect(resultBody).toBe("OK");
-		expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
-		expect(mockGetSession).toHaveBeenCalledTimes(1);
-	});
+    expect(result.status).toBe(200);
+    expect(resultBody).toBe("OK");
+    expect(mockVerifyAsync).toHaveBeenCalledTimes(1);
+    expect(mockGetSession).toHaveBeenCalledTimes(1);
+  });
 
-	it("should return same instance for multiple call", async () => {
-		const session1 = sessionPlugin();
-		const session2 = sessionPlugin();
+  it("should return same instance for multiple call", async () => {
+    const session1 = sessionPlugin();
+    const session2 = sessionPlugin();
 
-		expect(session1).toBe(session2);
+    expect(session1).toBe(session2);
 
-		const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
-			async () => verifiedBearer,
-		);
+    const mockVerifyAsync = mock(jwt.verifyAsync).mockImplementation(
+      async () => verifiedBearer,
+    );
 
-		const mockGetSession = mock(getSession).mockImplementation(
-			async () => null,
-		);
+    const mockGetSession = mock(getSession).mockImplementation(
+      async () => null,
+    );
 
-		const mockDeps = new Elysia({
-			name: "session-deps",
-		})
-			.decorate("bearer", "bearer")
-			.decorate("verifyAsync", mockVerifyAsync)
-			.decorate("getSession", mockGetSession) as unknown as SessionDeps;
+    const mockDeps = new Elysia({
+      name: "session-deps",
+    })
+      .decorate("bearer", "bearer")
+      .decorate("verifyAsync", mockVerifyAsync)
+      .decorate("getSession", mockGetSession) as unknown as SessionDeps;
 
-		const mockSession1 = sessionPlugin(mockDeps);
-		const mockSession2 = sessionPlugin(mockDeps);
+    const mockSession1 = sessionPlugin(mockDeps);
+    const mockSession2 = sessionPlugin(mockDeps);
 
-		expect(mockSession1).toBe(mockSession2);
-		expect(session1).not.toBe(mockSession1);
-	});
+    expect(mockSession1).toBe(mockSession2);
+    expect(session1).not.toBe(mockSession1);
+  });
 });

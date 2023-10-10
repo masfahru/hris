@@ -11,14 +11,14 @@ export type GetSessionParams = Static<typeof getSessionParams>;
 export const compiledSessionSchema = TypeCompiler.Compile(sessionSchema);
 
 export const getSession = async (
-	params: GetSessionParams,
+  params: GetSessionParams,
 ): Promise<string | null> => {
-	const rows = await sql`
+  const rows = await sql`
     SELECT id FROM ${sql(sessionTableName)}
     WHERE ${and(toSql(params))}
   `;
-	if (rows.length === 0) {
-		return null;
-	}
-	return rows[0].id;
+  if (rows.length === 0) {
+    return null;
+  }
+  return rows[0].id;
 };

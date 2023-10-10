@@ -11,7 +11,7 @@ export type SuperAdminProfile = Static<typeof superAdminProfileSchema>;
 const compiledValidator = TypeCompiler.Compile(superAdminProfileSchema);
 
 export const getSuperAdmin = async (id: number) => {
-	const result = await sql`
+  const result = await sql`
     SELECT
       id,
       username,
@@ -26,12 +26,12 @@ export const getSuperAdmin = async (id: number) => {
       id = ${id}
     LIMIT 1
   `;
-	if (result.length === 0) {
-		return null;
-	}
-	const isValid = compiledValidator.Check(result[0]);
-	if (!isValid) {
-		throw new Error("Failed to validate super admin profile");
-	}
-	return result[0] as SuperAdminProfile;
+  if (result.length === 0) {
+    return null;
+  }
+  const isValid = compiledValidator.Check(result[0]);
+  if (!isValid) {
+    throw new Error("Failed to validate super admin profile");
+  }
+  return result[0] as SuperAdminProfile;
 };

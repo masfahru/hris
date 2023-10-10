@@ -8,14 +8,14 @@ const createSessionParams = t.Pick(sessionSchema, ["id", "userId", "role"]);
 export type CreateSessionParams = Static<typeof createSessionParams>;
 
 export const createSession = async (
-	params: CreateSessionParams,
+  params: CreateSessionParams,
 ): Promise<string | null> => {
-	const rows = await sql`
+  const rows = await sql`
     INSERT INTO ${sql(sessionTableName)} ${sql(params)}
     RETURNING id
   `;
-	if (rows.length === 0) {
-		return null;
-	}
-	return rows[0].id;
+  if (rows.length === 0) {
+    return null;
+  }
+  return rows[0].id;
 };

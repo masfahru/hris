@@ -5,26 +5,26 @@ import { httpErrorDecorator } from "elysia-http-error";
 import * as db from "../db";
 
 const superAdminProfileDeps = new Elysia({
-	name: "super-admin-profile-deps",
+  name: "super-admin-profile-deps",
 })
-	.use(sessionPlugin)
-	.decorate("getSuperAdmin", db.getSuperAdmin);
+  .use(sessionPlugin)
+  .decorate("getSuperAdmin", db.getSuperAdmin);
 
 const generatePlugin = (deps: SuperAdminProfileDeps) =>
-	new Elysia({
-		name: "super-admin-profile-plugin",
-	})
-		.use(httpErrorDecorator)
-		.use(deps)
-		.derive(async ({ session, HttpError: httpError, getSuperAdmin }) => {
-			const superAdminProfile = await getSuperAdmin(session.userId);
-			if (!superAdminProfile) {
-				throw httpError.Unauthorized();
-			}
-			return {
-				superAdminProfile,
-			};
-		});
+  new Elysia({
+    name: "super-admin-profile-plugin",
+  })
+    .use(httpErrorDecorator)
+    .use(deps)
+    .derive(async ({ session, HttpError: httpError, getSuperAdmin }) => {
+      const superAdminProfile = await getSuperAdmin(session.userId);
+      if (!superAdminProfile) {
+        throw httpError.Unauthorized();
+      }
+      return {
+        superAdminProfile,
+      };
+    });
 
 export type SuperAdminProfileDeps = typeof superAdminProfileDeps;
 
@@ -33,6 +33,6 @@ type SuperAdminProfilePlugin = ReturnType<typeof generatePlugin>;
 const pluginMap = new Map<SuperAdminProfileDeps, SuperAdminProfilePlugin>();
 
 export const superAdminProfilePlugin = (
-	deps: SuperAdminProfileDeps = superAdminProfileDeps,
+  deps: SuperAdminProfileDeps = superAdminProfileDeps,
 ): SuperAdminProfilePlugin =>
-	getOrCreatePlugin(deps, generatePlugin, pluginMap);
+  getOrCreatePlugin(deps, generatePlugin, pluginMap);

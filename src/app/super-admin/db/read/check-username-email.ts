@@ -3,17 +3,17 @@ import { Static, Type } from "@sinclair/typebox";
 import { superAdminSchema, superAdminTableName } from "../super-admin.model";
 
 const checkUsernameEmailSchema = Type.Pick(superAdminSchema, [
-	"username",
-	"email",
+  "username",
+  "email",
 ]);
 
 type CheckUsernameEmailSchema = Static<typeof checkUsernameEmailSchema>;
 
 export const isEmailOrUsernameAvailable = async (
-	params: CheckUsernameEmailSchema,
+  params: CheckUsernameEmailSchema,
 ) => {
-	const filter = toSql(params);
-	const result = await sql`
+  const filter = toSql(params);
+  const result = await sql`
     SELECT
       id
     FROM
@@ -22,8 +22,8 @@ export const isEmailOrUsernameAvailable = async (
       ${or(filter)}
     LIMIT 1
   `;
-	if (result.length === 0) {
-		return true;
-	}
-	return false;
+  if (result.length === 0) {
+    return true;
+  }
+  return false;
 };
