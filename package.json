@@ -4,8 +4,7 @@
 	"scripts": {
 		"test": "bun --bun test",
 		"dev": "bun --bun --watch src/index.ts",
-		"lint": "bunx --bun biome format ./src --write && bunx --bun biome check ./src",
-		"tsc": "rm -rf build && bunx --bun tsc --project tsconfig.build.json",
+		"lint": "bunx --bun tsc --project tsconfig.build.json && rm -rf build && bunx --bun biome format ./src --write && bunx --bun biome check ./src",
 		"build": "rm -rf build && bun --bun build --target=bun --minify --splitting --outdir=build ./src"
 	},
 	"dependencies": {
