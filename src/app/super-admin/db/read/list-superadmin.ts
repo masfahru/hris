@@ -48,9 +48,9 @@ export const listSuperAdmin = async (
     FROM
       ${sql(superAdminTableName)}
     ${whereQuery}
+    ORDER BY ${sql(params.orderBy)} ${sql.unsafe(params.order)}
     LIMIT ${params.limit}
     OFFSET ${offset}
-    ORDER BY ${sql(params.orderBy)} ${params.order}
   `;
   return results;
 };
@@ -70,5 +70,5 @@ export const totalSuperAdmin = async (params: SuperAdminQuerySchema) => {
       ${sql(superAdminTableName)}
     ${whereQuery}
   `;
-  return results[0].total;
+  return Number(results[0].total);
 };
