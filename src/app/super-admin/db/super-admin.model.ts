@@ -1,4 +1,3 @@
-import { Nullable } from "@common/typebox/helper";
 import { getTableName } from "@databases/postgres/sql";
 import { Static } from "@sinclair/typebox";
 import { t } from "elysia";
@@ -9,10 +8,12 @@ export const superAdminSchema = t.Object({
   }),
   username: t.String({
     minLength: 1,
+    pattern: "^[a-zA-Z0-9]*$",
   }),
-  email: Nullable(
+  email: t.Nullable(
     t.String({
-      format: "email",
+      minLength: 5,
+      pattern: "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$",
     }),
   ),
   password: t.String({
@@ -21,17 +22,9 @@ export const superAdminSchema = t.Object({
   name: t.String({
     minLength: 1,
   }),
-  lastLoginAt: Nullable(
-    t.String({
-      format: "date-time",
-    }),
-  ),
-  createdAt: t.String({
-    format: "date-time",
-  }),
-  updatedAt: t.String({
-    format: "date-time",
-  }),
+  lastLoginAt: t.Nullable(t.Date()),
+  createdAt: t.Date(),
+  updatedAt: t.Date(),
 });
 
 export type SuperAdminModel = Static<typeof superAdminSchema>;

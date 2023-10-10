@@ -10,16 +10,23 @@ export type SuperAdminProfile = Static<typeof superAdminProfileSchema>;
 
 const compiledValidator = TypeCompiler.Compile(superAdminProfileSchema);
 
-export const getSuperAdmin = async (id: number) => {
+const superAdminColumns = [
+  "id",
+  "username",
+  "email",
+  "name",
+  "lastLoginAt",
+  "createdAt",
+  "updatedAt",
+];
+
+export const getSuperAdmin = async (
+  id: number,
+  columns: string[] = superAdminColumns,
+) => {
   const result = await sql`
     SELECT
-      id,
-      username,
-      email,
-      name,
-      lastLoginAt,
-      createdAt,
-      updatedAt
+      ${sql(columns)}
     FROM
       ${sql(superAdminTableName)}
     WHERE

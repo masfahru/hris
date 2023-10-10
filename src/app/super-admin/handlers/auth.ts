@@ -80,6 +80,7 @@ export const logoutPlugin = (deps: LogoutDeps = logoutDeps) =>
   new Elysia({
     name: "super-admin-auth-logout-plugin",
   })
+    .use(httpErrorDecorator)
     .use(deps)
     .post(
       "/logout",

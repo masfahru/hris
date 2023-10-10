@@ -7,10 +7,10 @@ import * as db from "../db";
 const superAdminProfileDeps = new Elysia({
   name: "super-admin-profile-deps",
 })
-  .use(sessionPlugin)
+  .use(sessionPlugin())
   .decorate("getSuperAdmin", db.getSuperAdmin);
 
-const generatePlugin = (deps: SuperAdminProfileDeps) =>
+const generatePlugin = (deps: SuperAdminProfileDeps = superAdminProfileDeps) =>
   new Elysia({
     name: "super-admin-profile-plugin",
   })

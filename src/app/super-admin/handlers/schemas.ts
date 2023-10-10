@@ -1,5 +1,6 @@
 import { paginationSchema } from "@common/typebox/schemas/pagination";
 import { t } from "elysia";
+import { superAdminSchema } from "../db/super-admin.model";
 
 export const signDto = t.Object({
   username: t.String(),
@@ -8,11 +9,7 @@ export const signDto = t.Object({
 
 export const superAdminQueryDto = t.Composite([
   t.Object({
-    username: t.Optional(
-      t.String({
-        pattern: "^[a-zA-Z0-9]*$",
-      }),
-    ),
+    username: t.Optional(t.Pick(superAdminSchema, ["username"])),
   }),
   paginationSchema,
 ]);

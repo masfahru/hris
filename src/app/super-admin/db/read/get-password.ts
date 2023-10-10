@@ -7,15 +7,18 @@ const idPasswordSchema = t.Pick(superAdminSchema, ["id", "password"]);
 
 export type IdPasswordSchema = Static<typeof idPasswordSchema>;
 
+const superAdminPasswordColumns = ["id", "password"];
+
 export const getSuperAdminPassword = async (
   username: string,
+  columns: string[] = superAdminPasswordColumns,
 ): Promise<IdPasswordSchema | null> => {
   const usernameOrEmail = {
     username,
     email: username,
   };
   const rows = await sql`
-    SELECT id, password FROM ${sql(superAdminTableName)}
+    SELECT ${sql(columns)} FROM ${sql(superAdminTableName)}
     WHERE ${or(toSql(usernameOrEmail))}
   `;
   if (rows.length === 0) {

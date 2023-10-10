@@ -13,9 +13,9 @@ describe("superAdminProfilePlugin", () => {
       id: 1,
       name: "John Doe",
       email: "john@doe.com",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastLoginAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastLoginAt: new Date(),
       username: "john",
     };
 
