@@ -1,7 +1,7 @@
 import postgres, { ParameterOrFragment } from "postgres";
 import { databaseConfig } from "./config";
 
-const sql = postgres({
+const dbConfig = {
   host: databaseConfig.host,
   port: databaseConfig.port,
   username: databaseConfig.user,
@@ -10,7 +10,9 @@ const sql = postgres({
   ssl: databaseConfig.ssl,
   max: 1,
   transform: postgres.camel,
-});
+};
+
+const sql = postgres(dbConfig);
 
 const and = (arr: postgres.PendingQuery<postgres.Row[]>[]) =>
   arr.reduce((acc, x) => sql`${acc} AND ${x}`);
@@ -38,4 +40,18 @@ const getTableName = (name: string) =>
     process.env.NODE_ENV === "test" ? "test_" : databaseConfig.prefix ?? ""
   }${name}`;
 
-export { sql, and, or, toSql, getTableName };
+const sqlMap = new Map<typeof dbConfig, ReturnType<typeof postgres>>();
+
+const generateSqlInstance = (config: typeof dbConfig = dbConfig) => {
+  if (sqlMap.has(config) && process.env.NODE_ENV !== "test") {
+    const sql = sqlMap.get(config);
+    if (sql) {
+      return sql;
+    }
+  }
+  const sql = postgres(config);
+  sqlMap.set(config, sql);
+  return sql;
+};
+
+export { sql, and, or, toSql, getTableName, generateSqlInstance };
