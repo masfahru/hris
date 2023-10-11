@@ -35,7 +35,7 @@ const toSql = (obj: SqlObject) => {
 
 const getTableName = (name: string) =>
   `${
-    process.env.NODE_ENV === "test" ? "TEST_" : databaseConfig.prefix ?? ""
+    process.env.NODE_ENV === "test" ? "test_" : databaseConfig.prefix ?? ""
   }${name}`;
 
 export { sql, and, or, toSql, getTableName };
