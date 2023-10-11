@@ -1,21 +1,12 @@
-import { databaseConfig } from "@databases/postgres/config";
+import { generateSqlInstance } from "@databases/postgres/sql";
 import Bun from "bun";
-import postgres from "postgres";
 import { createSuperAdmin } from "../create";
 import { superAdminTableName } from "../super-admin.model";
 import { deleteSuperAdmin } from "./delete-superadmin";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 
 describe("Database Test: Delete Admin", () => {
-  const sql = postgres({
-    host: databaseConfig.host,
-    port: databaseConfig.port,
-    username: databaseConfig.user,
-    password: databaseConfig.password,
-    database: databaseConfig.database,
-    ssl: databaseConfig.ssl,
-    transform: postgres.camel,
-  });
+  const sql = generateSqlInstance();
 
   beforeAll(async () => {
     await sql`
