@@ -1,3 +1,5 @@
+import { getSuperAdminPassword } from "@app/super-admin/db";
+import { superAdminProfilePlugin } from "@app/super-admin/plugins";
 import { generateUid } from "@common/uid/uid";
 import { UserRole } from "@core/enums/user-roles";
 import * as jwt from "@core/jwt/jwt";
@@ -5,9 +7,7 @@ import * as sessionCrud from "@core/session/crud";
 import Bun from "bun";
 import Elysia from "elysia";
 import { httpErrorDecorator } from "elysia-http-error";
-import { getSuperAdminPassword } from "../db";
-import { superAdminProfilePlugin } from "../plugins";
-import { signDto } from "./schemas";
+import { signDto } from "../schemas";
 
 const loginDeps = new Elysia({
   name: "login-deps",

@@ -1,3 +1,4 @@
+import * as db from "@app/super-admin/db";
 import { errorHandlerPlugin } from "@common/error-handler";
 import { generateUid } from "@common/uid/uid";
 import { signSync } from "@core/jwt/jwt";
@@ -5,7 +6,6 @@ import { createSession } from "@core/session/crud/create-session";
 import { deleteSession } from "@core/session/crud/delete-session";
 import Bun from "bun";
 import Elysia from "elysia";
-import * as db from "../db";
 import { LoginDeps, LogoutDeps, loginPlugin, logoutPlugin } from "./auth";
 import { describe, expect, it, mock } from "bun:test";
 
