@@ -9,6 +9,7 @@ const sql = postgres({
   database: databaseConfig.database,
   ssl: databaseConfig.ssl,
   max: 1,
+  transform: postgres.camel,
 });
 
 const and = (arr: postgres.PendingQuery<postgres.Row[]>[]) =>
@@ -32,6 +33,9 @@ const toSql = (obj: SqlObject) => {
   );
 };
 
-const getTableName = (name: string) => `${databaseConfig.prefix ?? ""}${name}`;
+const getTableName = (name: string) =>
+  `${
+    process.env.NODE_ENV === "test" ? "TEST_" : databaseConfig.prefix ?? ""
+  }${name}`;
 
 export { sql, and, or, toSql, getTableName };

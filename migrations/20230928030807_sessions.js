@@ -11,10 +11,10 @@ export async function up(knex) {
   if (exists) { return null }
   return knex.schema.createTable(tableName, (table) => {
     table.string('id').primary()
-    table.integer('userId').notNullable().index()
+    table.integer('user_id').notNullable().index()
     table.string('role', 15).notNullable().index()
-    table.dateTime('lastUsed').notNullable().defaultTo(knex.fn.now())
-    table.dateTime('createdAt').notNullable().defaultTo(knex.fn.now())
+    table.dateTime('last_used').notNullable().defaultTo(knex.fn.now())
+    table.dateTime('created_at').notNullable().defaultTo(knex.fn.now())
   })
 }
 

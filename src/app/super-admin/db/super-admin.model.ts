@@ -30,3 +30,14 @@ export const superAdminSchema = t.Object({
 export type SuperAdminModel = Static<typeof superAdminSchema>;
 
 export const superAdminTableName = getTableName("super_admins");
+
+export const superAdminColumnList = [
+  "id",
+  "username",
+  "email",
+  "password",
+  "name",
+  "lastLoginAt",
+  "createdAt",
+  "updatedAt",
+];

@@ -11,9 +11,9 @@ export async function up(knex) {
     table.string('email').nullable().index()
     table.string('password').notNullable()
     table.string('name').notNullable()
-    table.dateTime('lastLoginAt').nullable()
-    table.dateTime('createdAt').notNullable().defaultTo(knex.fn.now())
-    table.dateTime('updatedAt').notNullable().defaultTo(knex.fn.now())
+    table.dateTime('last_login_at').nullable()
+    table.dateTime('created_at').notNullable().defaultTo(knex.fn.now())
+    table.dateTime('updated_at').notNullable().defaultTo(knex.fn.now())
   })
 }
 

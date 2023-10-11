@@ -11,8 +11,8 @@ export async function up(knex) {
   const exists = await knex.schema.hasTable(tableName)
   if (exists) { return null }
   return knex.schema.createTable(tableName, (table) => {
-    table.string('sessionId').primary()
-    table.foreign('sessionId').references('id').inTable(sessionTableName).onDelete('CASCADE').onUpdate('CASCADE')
+    table.string('session_id').primary()
+    table.foreign('session_id').references('id').inTable(sessionTableName).onDelete('CASCADE').onUpdate('CASCADE')
     table.string('ip').index()
     table.string('ua')
   })
