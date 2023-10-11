@@ -1,6 +1,6 @@
 import { sql } from "@databases/postgres/sql";
 import { Static, Type } from "@sinclair/typebox";
-import { InternalServerError } from "elysia";
+import { Sql } from "postgres";
 import { superAdminSchema, superAdminTableName } from "../super-admin.model";
 
 const superAdmin = Type.Pick(superAdminSchema, [
@@ -12,17 +12,17 @@ const superAdmin = Type.Pick(superAdminSchema, [
 
 type SuperAdminParams = Static<typeof superAdmin>;
 
-export const createSuperAdmin = async (params: SuperAdminParams) => {
-  const result = await sql`
-    INSERT INTO ${sql(superAdminTableName)} ${sql({
+export const createSuperAdmin = async (
+  params: SuperAdminParams,
+  db: Sql = sql,
+) => {
+  const result = await db`
+    INSERT INTO ${db(superAdminTableName)} ${db({
     ...params,
     password: params.password,
     email: params.email ?? null,
   })}
     RETURNING id
   `;
-  if (result.length === 0) {
-    throw new InternalServerError("Failed to create super admin");
-  }
-  return result[0].id;
+  return result.length ? result[0].id : null;
 };
