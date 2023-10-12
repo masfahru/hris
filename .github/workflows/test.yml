@@ -9,7 +9,7 @@ jobs:
   test:
     name: Test
     strategy:
-      fail-fast: false
+      fail-fast: true
     runs-on: ubuntu-latest
     environment: test
     services:
@@ -31,3 +31,12 @@ jobs:
             bun i
             bun run lint
             bun run test
+        env:
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          TZ: ${{ vars.TZ }}
+          PGHOST: ${{ vars.PGHOST }}
+          PGUSER: ${{ vars.PGUSER }}
+          PGPASSWORD: ${{ vars.PGPASSWORD }}
+          PGDATABASE: ${{ vars.PGDATABASE }}
+          PORT: ${{ vars.PORT }}
+          JWT_SECRET: ${{ vars.JWT_SECRET }}
