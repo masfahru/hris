@@ -8,7 +8,7 @@ const databaseConfig: PostgresDatabaseConfig = {
   user: process.env.PGUSER ?? "",
   password: process.env.PGPASSWORD ?? "",
   database: process.env.PGDATABASE ?? "",
-  ssl: true,
+  ssl: process.env.NODE_ENV !== "test",
   prefix: process.env.DB_PREFIX || "",
 };
 
