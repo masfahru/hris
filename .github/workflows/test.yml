@@ -27,7 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
-      - run: |
+      - name: 🧪 Bun test
+        run: |
             bun i
             bun run lint
             bun run test
